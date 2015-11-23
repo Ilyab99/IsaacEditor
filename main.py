@@ -3,7 +3,7 @@ import Tkinter as tk
 import os
 import xml.etree.ElementTree as etree
 import shutil
-
+import sys
 from xml.etree.ElementTree import Element
 
 
@@ -73,7 +73,20 @@ class StartWindow():
         #listbox.config(yscrollcommand=scrollbar.set)
         #scrollbar.config(command=listbox.yview)
 
-        b = tk.Button(self.root, text="Launch The Binding Of Isaac",command=lambda: subprocess.call([readconfig.readconfig("pathgame.ini", "r")]))
+        if sys.platform == "linux2":
+            path = readconfig.readconfig("pathgame.ini", "r")
+            #print path
+
+            b = tk.Button(self.root, text="Launch The Binding Of Isaac",command=lambda: subprocess.call('cd /home/ilya/.local/share/Steam/steamapps/common/The\ Binding\ of\ Isaac\ Rebirth/ && ./run-x64.sh', shell=True))
+
+
+           #b = tk.Button(self.root, text="Launch The Binding Of Isaac",command=lambda: subprocess.call([readconfig.readconfig("pathgame.ini", "r")]))
+           # b = tk.Button(self.root, text="Launch The Binding Of Isaac",command=lambda: subprocess.call(['./home/ilya/.local/share/Steam/steamapps/common/The\ Binding\ of\ Isaac\ Rebirth/run-x64.sh']))
+
+
+
+
+
         ParseXml.isaac = etree.parse("players.xml")
         ParseXml.root = ParseXml.isaac
         b2 = tk.Button(self.root, text="Update XML", command=lambda: ParseXml.isaac.write("players.xml"))
@@ -293,9 +306,9 @@ parsexml = ParseXml()
 startgui = StartWindow()
 startgui.window("The Binding Of Isaac Editor", ("500x150"))
 parsexml.mainparse("players.xml", "a")
-shutil.copy("players.xml", os.path.join(readconfig.readconfig("pathres.ini", "r")))
+#shutil.copy("players.xml", os.path.join(readconfig.readconfig("pathres.ini", "r")))
 
-
+shutil.copyfile("players.xml",  readconfig.readconfig("pathres.ini", "r"))
 
 
 # print (startgui.v)
