@@ -20,7 +20,7 @@ class StartWindow():
     e4 = tk.Entry(root, textvariable = maggieitem)
     #background_image=tk.PhotoImage("C:/Users/Ilya/PycharmProjects/isaac/afterbirth.jpg")
 
-
+    #b2 = tk.Button(root, text="Update XML", command=lambda: ParseXml.isaac.write("players.xml"))
     # v.set("10")
 
     # v = e1.get()
@@ -77,7 +77,10 @@ class StartWindow():
             path = readconfig.readconfig("pathgame.ini", "r")
             #print path
 
-            b = tk.Button(self.root, text="Launch The Binding Of Isaac",command=lambda: subprocess.call('cd /home/ilya/.local/share/Steam/steamapps/common/The\ Binding\ of\ Isaac\ Rebirth/ && ./run-x64.sh', shell=True))
+            b = tk.Button(self.root, text="Launch The Binding Of Isaac",command=lambda: subprocess.call("cd {0}  ./run-x64.sh".format(readconfig.readconfig("pathgame.ini","r")), shell=True))
+        else:
+            b = tk.Button(self.root, text="Launch The Binding Of Isaac",command=lambda: subprocess.call([readconfig.readconfig("pathgamewin.ini", "r")]))
+
 
 
            #b = tk.Button(self.root, text="Launch The Binding Of Isaac",command=lambda: subprocess.call([readconfig.readconfig("pathgame.ini", "r")]))
@@ -89,10 +92,10 @@ class StartWindow():
 
         ParseXml.isaac = etree.parse("players.xml")
         ParseXml.root = ParseXml.isaac
-        b2 = tk.Button(self.root, text="Update XML", command=lambda: ParseXml.isaac.write("players.xml"))
+
 
         b.place(relx=.3, rely=.9, anchor="c")
-        b2.place(relx=.6, rely=.9, anchor="c")
+        ParseXml.b2.place(relx=.6, rely=.9, anchor="c")
         #background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 
@@ -114,6 +117,7 @@ class StartWindow():
 class ParseXml():
     isaac = etree.parse("players.xml")
     root = isaac
+    b2 = tk.Button(StartWindow.root, text="Update XML", command=lambda: ParseXml.isaac.write("players.xml"))
 
 
 
@@ -177,23 +181,34 @@ class ParseXml():
                 items = p.get("items")
                 name = p.get("name")
                 StartWindow.root.mainloop()
+
+
+
+
                 if name == ('Isaac'):
 
 
 
-                    if p.get("items") == "":
+
+                    #if p.get("items") == "":
+                     #   p.set("hp", "{0}".format(StartWindow.isaachealth.get()))
+                      #  p.set("items", "{0}".format(StartWindow.isaacitem.get()))
+                      #  self.isaac.write('players.xml')
+                     #   continue
+
+                    if StartWindow.isaacitem.get() == "" and StartWindow.isaachealth.get() != "":
                         p.set("hp", "{0}".format(StartWindow.isaachealth.get()))
-                        p.set("items", "{0}".format(StartWindow.isaacitem.get()))
                         self.isaac.write('players.xml')
                         continue
-
-                    if StartWindow.isaacitem.get() == "":
-                        continue
-                    if StartWindow.isaachealth.get() == "":
+                    if StartWindow.isaachealth.get() == "" and StartWindow.isaacitem.get() != "":
                         newstring1 = p.get("items")
                         p.set("items", "{0}".format(newstring1+","+StartWindow.isaacitem.get()))
                         self.isaac.write('players.xml')
                         continue
+
+
+                    if (StartWindow.isaachealth.get() == "" and StartWindow.isaacitem.get() == ""):
+                        break
 
 
 
@@ -301,14 +316,24 @@ readconfig = OpenFile()
 # print(readconfig.readconfig("hello.ini","r"))
 
 # subprocess.call([readconfig.readconfig("hello.ini","r")])
-ParseXml.isaac.write('players.xml')
+#ParseXml.isaac.write('players.xml')
 parsexml = ParseXml()
 startgui = StartWindow()
 startgui.window("The Binding Of Isaac Editor", ("500x150"))
 parsexml.mainparse("players.xml", "a")
 #shutil.copy("players.xml", os.path.join(readconfig.readconfig("pathres.ini", "r")))
 
-shutil.copyfile("players.xml",  readconfig.readconfig("pathres.ini", "r"))
+
+
+
+
+if sys.platform == "linux2":
+    resoureceloc = readconfig.readconfig("pathres.ini","r")
+    os.system("cp players.xml " + resoureceloc)
+else:
+    shutil.copy("players.xml", os.path.join(readconfig.readconfig("pathres.ini", "r")))
+
+#shutil.copy("players.xml",  readconfig.readconfig("pathres.ini", "r"))
 
 
 # print (startgui.v)
