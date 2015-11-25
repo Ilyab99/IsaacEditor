@@ -4,7 +4,7 @@ import os
 import xml.etree.ElementTree as etree
 import shutil
 import sys
-from xml.etree.ElementTree import Element
+#from xml.etree.ElementTree import Element
 
 
 class StartWindow():
@@ -78,7 +78,7 @@ class StartWindow():
             #print path
 
             b = tk.Button(self.root, text="Launch The Binding Of Isaac",command=lambda: subprocess.call("cd {0}  ./run-x64.sh".format(readconfig.readconfig("pathgame.ini","r")), shell=True))
-        else:
+        if sys.platform == "win32":
             b = tk.Button(self.root, text="Launch The Binding Of Isaac",command=lambda: subprocess.call([readconfig.readconfig("pathgamewin.ini", "r")]))
 
 
@@ -125,7 +125,6 @@ class ParseXml():
     # @classmethod
     def mainparse(self, file, param, ):
         """
-
         :type self: object
         """
         if os.path.exists(file):
@@ -141,7 +140,6 @@ class ParseXml():
 
             """
             for actor in root.findall('{player}item'):
-
                 item = actor.find ('{player}item')
                 print item.text
                 print ("hello")
@@ -330,8 +328,8 @@ parsexml.mainparse("players.xml", "a")
 if sys.platform == "linux2":
     resoureceloc = readconfig.readconfig("pathres.ini","r")
     os.system("cp players.xml " + resoureceloc)
-else:
-    shutil.copy("players.xml", os.path.join(readconfig.readconfig("pathres.ini", "r")))
+if sys.platform == "win32":
+    shutil.copy("players.xml", os.path.join(readconfig.readconfig("pathreswin.ini", "r")))
 
 #shutil.copy("players.xml",  readconfig.readconfig("pathres.ini", "r"))
 
