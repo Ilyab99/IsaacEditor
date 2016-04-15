@@ -9,3 +9,5 @@ This is due to my .Xresources yours will look diferent.
 
 this is on windows
 
+
+![This is what the Programme looks like on Linux ](http://i.imgur.com/yEWwzzq.png)
